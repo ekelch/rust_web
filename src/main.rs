@@ -1,4 +1,3 @@
-use axum::response::Html;
 use axum::Router;
 use axum::routing::get;
 
@@ -7,7 +6,7 @@ async fn main() {
 
     let app = Router::new().route(
         "/hello",
-        get(|| async { Html("Hello, <em>world!</em>")})
+        get(hello_world)
     );
 
     axum::Server::bind(&"0.0.0.0:8080".parse().unwrap())
@@ -15,4 +14,8 @@ async fn main() {
         .await
         .unwrap()
 
+}
+
+async fn hello_world() -> String {
+    String::from("Hello, world!")
 }
