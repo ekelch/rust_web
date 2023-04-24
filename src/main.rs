@@ -1,7 +1,8 @@
 use std::fmt::Formatter;
-use axum::{Router};
+use axum::{Json, Router};
 use axum::routing::get;
-
+use libsql_client::{new_client_from_config, Config, DatabaseClient};
+use libsql_client::hrana::Client;
 use serde::{Serialize, Deserialize};
 
 
@@ -16,7 +17,6 @@ async fn main() {
         .serve(app.into_make_service())
         .await
         .unwrap()
-
 
 }
 
@@ -38,24 +38,23 @@ impl std::fmt::Display for Work {
     }
 }
 
+// async fn get_client() -> DatabaseClient {
+//     client = new_client_from_config(Config {
+//         url: "libsql://your-database.turso.io".try_into()?,
+//         auth_token: Some(String::from("your-auth-token")),
+//     }).await?;
+// }
+
 async fn hello_world() -> String {
     String::from("Hello, world!")
 }
 
-async fn give_work() {
+async fn give_work() -> Json<Work> {
     let new_work = Work{
         id: 1,
         work_code: "jpmc".to_string(),
         add_up_to: 100,
         done: false,
     };
-    println!("before all: {}", new_work);
-
-    let work_json = serde_json::to_string(&new_work).unwrap();
-    println!("serialized: {work_json}");
-
-    let deserial_work: Work = serde_json::from_str(&work_json.as_str()).unwrap();
-    println!("deserialized: {}", deserial_work);
-
-    assert_eq!(new_work, deserial_work);
+    Json(new_work)
 }
